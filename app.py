@@ -42,11 +42,11 @@ def webhook():
                     message_text = messaging_event["message"]["text"]  
 
                     # if message isn't prefixed by '!' then help massage is shown
-                    if (message_text[0] != '!'):
+                    if (message_text[0] == '!'):
                         send_message(sender_id, message_text)
 
                     else:
-                        send_message(sender_id, "Working")
+                        send_message(sender_id, message_text[0])
 
                 # delivery confirmation
                 if messaging_event.get("delivery"):  
