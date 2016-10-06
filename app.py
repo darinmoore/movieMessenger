@@ -42,7 +42,7 @@ def webhook():
                     # the message's text
                     message_text = messaging_event["message"]["text"]
                     # adds words in message_text to a list
-                    text_words = messsage_text.split()
+                    text_words = message_text.split()
 
                     # if prefixed by '!' then it executes appropiate command
                     if (message_text[0] == '!'):
