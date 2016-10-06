@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import imdb
 
 import requests
 from flask import Flask, request
@@ -35,16 +36,19 @@ def webhook():
                 # if some one sent a message
                 if messaging_event.get("message"):  
                     # the facebook ID of the person sending you the message
-                    sender_id = messaging_event["sender"]["id"]        
+                    sender_id = messaging_event["sender"]["id"]
                     # the recipient's ID, which should be your page's facebook ID
-                    recipient_id = messaging_event["recipient"]["id"]  
+                    recipient_id = messaging_event["recipient"]["id"]
                     # the message's text
-                    message_text = messaging_event["message"]["text"]  
+                    message_text = messaging_event["message"]["text"]
+                    # adds words in message_text to a list
+                    text_words = messsage_text.split()
 
-                    # if message isn't prefixed by '!' then help massage is shown
+                    # if prefixed by '!' then it executes appropiate command
                     if (message_text[0] == '!'):
-                        send_message(sender_id, message_text)
+                        send_message(sender_id, text_words[0])
 
+                    # otherwise it prints the correct usage message
                     else:
                         send_message(sender_id, message_text[0])
 
