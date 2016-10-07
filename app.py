@@ -62,15 +62,16 @@ def webhook():
                                 result = search[0]
 
                                 # Gets info about the search result
-                                ia.update(result)
+                                ia.update(result, ['main', 'vote details'])
                                 director = result['director'][0]
                                 year = result['year']
-                                rating = result['rating'][0]
+                                rating = result['rating']
                                 runtime = result['runtime'][0]
 
                                 send_message(sender_id, "Movie Title: " + str(result) + 
                                     "\nYear: " + str(year) + "\nDirector: " + str(director) +
-                                    "\nRating: " + str(rating) + "\nRuntime: " + str(runtime) 
+                                    "\nRating: " + str(rating) + 
+                                    "\nRuntime: " + str(runtime) 
                                     + " minutes")
 
                             # prints appropiate error message
