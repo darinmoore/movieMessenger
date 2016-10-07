@@ -59,10 +59,10 @@ def webhook():
 
                             # Gets info about the search result
                             ia.update(result)
-                            director = result['director']
+                            director = result['director'][0]
                             year = result['year']
                             rating = result['rating']
-                            runtime = result['runtime']
+                            runtime = result['runtime'][0]
 
                             send_message(sender_id, "Movie Title: " + str(result) + 
                                 "\nYear: " + str(year) + "\nDirector: " + str(director) +
