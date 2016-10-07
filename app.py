@@ -67,7 +67,7 @@ def webhook():
                             send_message(sender_id, "Movie Title: " + str(result) + 
                                 "\nYear: " + str(year) + "\nDirector: " + str(director) +
                                 "\nRating: " + str(rating) + "\nRuntime: " + str(runtime) 
-                                + "minutes")
+                                + " minutes")
 
                         else:
                             send_message(sender_id, "Command not found")
