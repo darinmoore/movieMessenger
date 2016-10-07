@@ -53,7 +53,7 @@ def webhook():
                         # let's the user search for a movie
                         if (text_words[0].lower() == '!movie'):
 
-                            if (text_words.size > MOVIE_MIN):
+                            if (len(text_words) > MOVIE_MIN):
                                 # allows access to database
                                 ia = imdb.IMDb()
 
