@@ -65,7 +65,7 @@ def webhook():
                                 ia.update(result)
                                 director = result['director'][0]
                                 year = result['year']
-                                rating = result['rating']
+                                rating = result['rating'][0]
                                 runtime = result['runtime'][0]
 
                                 send_message(sender_id, "Movie Title: " + str(result) + 
