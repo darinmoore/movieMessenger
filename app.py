@@ -8,6 +8,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+MOVIE_MIN = 1 # Minimum num of arguments for '!movie'
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -25,7 +26,6 @@ def verify():
 def webhook():
 
     # endpoint for processing incoming messaging events
-
     data = request.get_json()
     log(data)  # log message for testint
 
@@ -49,28 +49,37 @@ def webhook():
 
                     # if prefixed by '!' then it executes appropiate command
                     if (message_text[0] == '!'):
-                        if (text_words[0].lower() == '!search'):
-                            # allows access to database
-                            ia = imdb.IMDb()
 
-                            # finds first result based on search
-                            search = ia.search_movie(' '.join(text_words[1:]))
-                            result = search[0]
+                        # let's the user search for a movie
+                        if (text_words[0].lower() == '!movie'):
 
-                            # Gets info about the search result
-                            ia.update(result)
-                            director = result['director'][0]
-                            year = result['year']
-                            rating = result['rating']
-                            runtime = result['runtime'][0]
+                            if (text_words.size > MOVIE_MIN):
+                                # allows access to database
+                                ia = imdb.IMDb()
 
-                            send_message(sender_id, "Movie Title: " + str(result) + 
-                                "\nYear: " + str(year) + "\nDirector: " + str(director) +
-                                "\nRating: " + str(rating) + "\nRuntime: " + str(runtime) 
-                                + " minutes")
+                                # finds first result based on search
+                                search = ia.search_movie(' '.join(text_words[1:]))
+                                result = search[0]
+
+                                # Gets info about the search result
+                                ia.update(result)
+                                director = result['director'][0]
+                                year = result['year']
+                                rating = result['rating']
+                                runtime = result['runtime'][0]
+
+                                send_message(sender_id, "Movie Title: " + str(result) + 
+                                    "\nYear: " + str(year) + "\nDirector: " + str(director) +
+                                    "\nRating: " + str(rating) + "\nRuntime: " + str(runtime) 
+                                    + " minutes")
+
+                            # prints appropiate error message
+                            else:
+                                send_message(sender_id, "Incorrect usage, please include a " + 
+                                    "movie to search for")
 
                         else:
-                            send_message(sender_id, "Command not found")
+                            usage_message(sender_id)
 
                     # otherwise it prints the correct usage message
                     else:
@@ -113,6 +122,12 @@ def send_message(recipient_id, message_text):
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
+
+
+def usage_message(recipient_id):  # prints usage message for the user
+    send_message(recipient_id, "Welcome to Movie_Messenger, here is a list of some commands:\n\n" + 
+        "'!movie <movie name>' will return information about the movie passed in")
+
 
 
 def log(message):  # simple wrapper for logging to stdout on heroku
