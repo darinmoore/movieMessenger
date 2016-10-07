@@ -33,12 +33,15 @@ def webhook():
 
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
+                
                 # if some one sent a message
                 if messaging_event.get("message"):  
+                    
                     # the facebook ID of the person sending you the message
                     sender_id = messaging_event["sender"]["id"]
                     # the recipient's ID, which should be your page's facebook ID
                     recipient_id = messaging_event["recipient"]["id"]
+                    
                     # the message's text
                     message_text = messaging_event["message"]["text"]
                     # adds words in message_text to a list
@@ -46,7 +49,27 @@ def webhook():
 
                     # if prefixed by '!' then it executes appropiate command
                     if (message_text[0] == '!'):
-                        send_message(sender_id, text_words[0])
+                        if (text_words[0].lower() == '!search'):
+                            # allows access to database
+                            ia = imdb.IMDb()
+
+                            # finds first result based on search
+                            search = ia.search_movie(text_words[1:])
+                            result = search[0]
+
+                            # Gets info about the search result
+                            ia.update(result)
+                            director = result['director']
+                            year = result['year']
+                            rating = result['rating']
+                            runtime = result['runtime']
+
+                            send_message(sender_id, "Movie Title: " + result + 
+                                "\nYear: " + year + "\nDirector: " + director +
+                                "\nRating: " + rating + "\n Runtime: " + runtime)
+
+                        else:
+                            send_message(sender_id, "Command not found")
 
                     # otherwise it prints the correct usage message
                     else:
