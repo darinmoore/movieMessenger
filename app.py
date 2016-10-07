@@ -54,7 +54,7 @@ def webhook():
                             ia = imdb.IMDb()
 
                             # finds first result based on search
-                            search = ia.search_movie(text_words[1:])
+                            search = ia.search_movie(' '.join(text_words[1:]))
                             result = search[0]
 
                             # Gets info about the search result
