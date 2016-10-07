@@ -64,16 +64,16 @@ def webhook():
                             rating = result['rating']
                             runtime = result['runtime']
 
-                            send_message(sender_id, "Movie Title: " + result + 
-                                "\nYear: " + year + "\nDirector: " + director +
-                                "\nRating: " + rating + "\n Runtime: " + runtime)
+                            send_message(sender_id, "Movie Title: " + str(result) + 
+                                "\nYear: " + str(year) + "\nDirector: " + str(director) +
+                                "\nRating: " + str(rating) + "\n Runtime: " + str(runtime))
 
                         else:
                             send_message(sender_id, "Command not found")
 
                     # otherwise it prints the correct usage message
                     else:
-                        send_message(sender_id, message_text[0])
+                        send_message(sender_id, "Usage error")
 
                 # delivery confirmation
                 if messaging_event.get("delivery"):  
