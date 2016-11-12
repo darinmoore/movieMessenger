@@ -3,7 +3,8 @@ import sys
 import json
 import imdb
 
-import send_message
+from send_message import send_message
+from usage_message import usage_message
 
 import requests
 from flask import Flask, request
@@ -86,7 +87,7 @@ def webhook():
 
                     # otherwise it prints the correct usage message
                     else:
-                        send_message(sender_id, "Usage error")
+                        usage_message(sender_id)
 
                 # delivery confirmation
                 if messaging_event.get("delivery"):
