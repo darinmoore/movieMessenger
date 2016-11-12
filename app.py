@@ -3,6 +3,8 @@ import sys
 import json
 import imdb
 
+import send_message
+
 import requests
 from flask import Flask, request
 
@@ -33,15 +35,15 @@ def webhook():
 
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-                
+
                 # if some one sent a message
-                if messaging_event.get("message"):  
-                    
+                if messaging_event.get("message"):
+
                     # the facebook ID of the person sending you the message
                     sender_id = messaging_event["sender"]["id"]
                     # the recipient's ID, which should be your page's facebook ID
                     recipient_id = messaging_event["recipient"]["id"]
-                    
+
                     # the message's text
                     message_text = messaging_event["message"]["text"]
                     # adds words in message_text to a list
@@ -68,15 +70,15 @@ def webhook():
                                 # rating = result['rating'] broken at the moment
                                 runtime = result['runtime'][0]
 
-                                send_message(sender_id, "Movie Title: " + str(result) + 
+                                send_message(sender_id, "Movie Title: " + str(result) +
                                     "\nYear: " + str(year) + "\nDirector: " + str(director) +
-                                    # "\nRating: " + str(rating) + 
-                                    "\nRuntime: " + str(runtime) 
+                                    # "\nRating: " + str(rating) +
+                                    "\nRuntime: " + str(runtime)
                                     + " minutes")
 
                             # prints appropiate error message
                             else:
-                                send_message(sender_id, "Incorrect usage, please include a " + 
+                                send_message(sender_id, "Incorrect usage, please include a " +
                                     "movie to search for")
 
                         else:
@@ -87,49 +89,18 @@ def webhook():
                         send_message(sender_id, "Usage error")
 
                 # delivery confirmation
-                if messaging_event.get("delivery"):  
+                if messaging_event.get("delivery"):
                     pass
 
                 # optin confirmation
-                if messaging_event.get("optin"):  
+                if messaging_event.get("optin"):
                     pass
 
                 # user clicked/tapped "postback" button in earlier message
-                if messaging_event.get("postback"):  
+                if messaging_event.get("postback"):
                     pass
 
     return "ok", 200
-
-
-def send_message(recipient_id, message_text):
-
-    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
-
-    params = {
-        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
-    data = json.dumps({
-        "recipient": {
-            "id": recipient_id
-        },
-        "message": {
-            "text": message_text
-        }
-    })
-    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
-
-
-def usage_message(recipient_id):  # prints usage message for the user
-    send_message(recipient_id, "Welcome to Movie_Messenger, here is a list of some commands:\n\n" + 
-        "'!movie <movie name>' will return information about the movie passed in")
-
-
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
