@@ -3,9 +3,6 @@ import sys
 import json
 import imdb
 
-from send_message import send_message
-from usage_message import usage_message
-
 import requests
 from flask import Flask, request
 
@@ -102,6 +99,37 @@ def webhook():
                     pass
 
     return "ok", 200
+
+
+def send_message(recipient_id, message_text):
+
+    log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
+
+    params = {
+        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+    }
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = json.dumps({
+        "recipient": {
+            "id": recipient_id
+        },
+        "message": {
+            "text": message_text
+        }
+    })
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+
+
+def usage_message(recipient_id):  # prints usage message for the user
+    send_message(recipient_id, "Welcome to Movie_Messenger, here is a list of some commands:\n\n" +
+        "'!movie <movie name>' will return information about the movie passed in")
+
+
 
 def log(message):  # simple wrapper for logging to stdout on heroku
     print str(message)
